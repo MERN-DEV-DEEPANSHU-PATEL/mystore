@@ -19,6 +19,7 @@ model User {
   updateAt    DateTime @updatedAt
 
   // One-to-many relationships
+
   @@map("users")
 }
 

@@ -1,7 +1,7 @@
 import express from "express";
 import {
   addCategory,
-  deleteCategory,
+  deleteSubcategory,
   editCategory,
   getAllCategories,
   getSingleCategory,
@@ -14,6 +14,6 @@ categoryRouter.get("/", getAllCategories);
 categoryRouter.get("/:categoryId", getSingleCategory);
 categoryRouter.put("/edit", editCategory);
 categoryRouter.post("/add", addCategory);
-categoryRouter.delete("/delete/:categoryId", deleteCategory);
+categoryRouter.delete("/delete/sub/:subcategoryId", deleteSubcategory);
 
 export default categoryRouter;

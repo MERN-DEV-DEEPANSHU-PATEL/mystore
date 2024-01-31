@@ -29,18 +29,39 @@ export const addCategory = async (req, res) => {
 
 export const editCategory = async (req, res) => {
   try {
-    const { categoryId, name, adminId } = req.body;
+    const { categoryId, name, adminId, subcategories } = req.body;
 
-    // Update category name
-    const updatedCategory = await prisma.category.update({
-      where: {
-        id: categoryId,
-      },
-      data: {
-        name,
-        adminId,
-      },
-    });
+    let updatedCategory;
+
+    if (subcategories && subcategories?.length > 0) {
+      // If subcategories are provided, update both category name and subcategories
+      updatedCategory = await prisma.category.update({
+        where: {
+          id: parseInt(categoryId),
+        },
+        data: {
+          name,
+          adminId,
+          subcategory: {
+            update: subcategories.map((subcategory) => ({
+              where: { id: subcategory.subcategoryId },
+              data: { name: subcategory.name },
+            })),
+          },
+        },
+      });
+    } else {
+      // If no subcategories are provided, only update the category name
+      updatedCategory = await prisma.category.update({
+        where: {
+          id: Number(categoryId),
+        },
+        data: {
+          name,
+          adminId,
+        },
+      });
+    }
 
     res.status(200).json({ category: updatedCategory });
   } catch (error) {
@@ -52,7 +73,6 @@ export const editCategory = async (req, res) => {
 export const getSingleCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
-
     // Get category and its subcategories
     const category = await prisma.category.findUnique({
       where: {
@@ -86,20 +106,31 @@ export const getAllCategories = async (req, res) => {
   }
 };
 
-export const deleteCategory = async (req, res) => {
+export const deleteSubcategory = async (req, res) => {
   try {
-    const { categoryId } = req.params;
+    const { subcategoryId } = req.params;
 
-    // Delete category and its subcategories
-    await prisma.category.delete({
+    // Check if the subcategory exists
+    const existingSubcategory = await prisma.subCategory.findUnique({
       where: {
-        id: Number(categoryId),
+        id: parseInt(subcategoryId),
       },
     });
 
-    res.status(204).send();
+    if (!existingSubcategory) {
+      return res.status(404).json({ error: "Subcategory not found" });
+    }
+
+    // Delete the subcategory
+    await prisma.subCategory.delete({
+      where: {
+        id: parseInt(subcategoryId),
+      },
+    });
+
+    res.status(200).json({ message: "Subcategory deleted successfully" });
   } catch (error) {
-    console.error("Error deleting category:", error);
+    console.error("Error deleting subcategory:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
