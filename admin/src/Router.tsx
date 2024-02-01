@@ -5,9 +5,10 @@ import SignupForm from "./pages/signup/SignUp";
 import SignInForm from "./pages/signin/SignIn";
 import AuthLayout from "./Layout";
 import { useDispatch, useSelector } from "react-redux";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import useApi from "./hooks/useApi";
 import { saveAdmin } from "./store/admin/adminSlice";
+import { Category } from "./pages/category/Category";
 
 const ProtectedRoute = ({ children }) => {
   const { admin } = useSelector((state) => state.admin);
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/categories",
+        element: <Category />,
       },
     ],
   },

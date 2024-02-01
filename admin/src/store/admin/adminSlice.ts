@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+// import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface AdminState {
   admin: {
@@ -26,11 +26,11 @@ export const AdminSlice = createSlice({
       state.admin = action.payload;
     },
     deleteAdmin: (state) => {
-      state.admin = initialState.admin;
+      state.admin = null;
     },
   },
 });
 
-export const { saveAdmin } = AdminSlice.actions;
+export const { saveAdmin, deleteAdmin } = AdminSlice.actions;
 
 export default AdminSlice.reducer;
